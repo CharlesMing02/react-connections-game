@@ -8,7 +8,7 @@ import { GameStatusContext } from "../../providers/GameStatusProvider";
 import { PuzzleDataContext } from "../../providers/PuzzleDataProvider";
 
 function ShareScoreButton({ buttonText = "Share", className = "" }) {
-  const { gameData } = React.useContext(PuzzleDataContext);
+  const { gameData, puzzleIndex } = React.useContext(PuzzleDataContext);
   const { submittedGuesses } = React.useContext(GameStatusContext);
   const { toast } = useToast();
   function handleShareToClipboard() {
@@ -36,6 +36,7 @@ function ShareScoreButton({ buttonText = "Share", className = "" }) {
             submittedGuesses,
             handleShareToClipboard,
             handleShareFailure,
+            puzzleIndex,
             true
           )
         }

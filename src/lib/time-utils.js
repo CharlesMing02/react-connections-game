@@ -79,6 +79,15 @@ export const getPuzzleOfDay = async (gameDate) => {
   }
 };
 
+const convertPuzzleData = (data) => {
+  return data.categories.map((category, index) => ({
+    category: category.title,
+    words: category.cards.map((card) => card.content),
+    difficulty: index + 1, // Assuming difficulty increases with each category
+    imageSrc: "",
+  }));
+};
+
 export const getSolution = async (gameDate) => {
   const nextGameDate = getNextGameDate(gameDate);
   // const index = getIndex(gameDate);
@@ -86,10 +95,12 @@ export const getSolution = async (gameDate) => {
   console.log("puzzleOfTheDay: ", puzzleOfTheDay);
   console.log("gameDate: ", gameDate);
   console.log("index for today: ", puzzleOfTheDay.id);
+  console.log("nextGameDate", nextGameDate.valueOf());
+  const convertedPuzzle = convertPuzzleData(puzzleOfTheDay);
   return {
-    puzzleAnswers: puzzleOfTheDay,
+    puzzleAnswers: convertedPuzzle,
     puzzleGameDate: gameDate,
-    puzzleIndex: index,
+    puzzleIndex: puzzleOfTheDay.id,
     dateOfNextPuzzle: nextGameDate.valueOf(),
   };
 };
@@ -130,5 +141,5 @@ export const getIsLatestGame = () => {
   return parsed === null || !("d" in parsed);
 };
 
-export const { puzzleAnswers, puzzleGameDate, puzzleIndex, dateOfNextPuzzle } =
-  getSolution(getGameDate());
+// export const { puzzleAnswers, puzzleGameDate, puzzleIndex, dateOfNextPuzzle } =
+//   await getSolution(getGameDate());

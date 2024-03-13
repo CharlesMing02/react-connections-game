@@ -1,7 +1,7 @@
 import { UAParser } from "ua-parser-js";
 
 import { GAME_TITLE } from "./constants";
-import { puzzleIndex } from "./time-utils";
+// import { puzzleIndex } from "./time-utils";
 import { generateEmojiGrid } from "./game-helpers";
 
 // Share logic from here: https://github.com/cwackerfuss/react-wordle/blob/main/src/lib/share.ts
@@ -15,7 +15,8 @@ export const shareStatus = (
   submittedGuesses,
   handleShareToClipboard,
   handleShareFailure,
-  includeGameLink = true
+  puzzleIndex,
+  includeGameLink = false
 ) => {
   const GAME_URL = window.location.href;
   const textToShare =
