@@ -7,6 +7,7 @@ import {
   startOfToday,
   startOfYesterday,
 } from "date-fns";
+import fetch from "node-fetch";
 
 import queryString from "query-string";
 
@@ -50,19 +51,41 @@ export const getIndex = (gameDate) => {
   return index;
 };
 
-export const getPuzzleOfDay = (index) => {
-  if (index < 0) {
-    throw new Error("Invalid index");
-  }
+// export const getPuzzleOfDay = (index) => {
+//   if (index < 0) {
+//     throw new Error("Invalid index");
+//   }
 
-  return CONNECTION_GAMES[index % CONNECTION_GAMES.length];
+//   return CONNECTION_GAMES[index % CONNECTION_GAMES.length];
+// };
+
+export const getPuzzleOfDay = async (gameDate) => {
+  const dateString = formatISO(gameDate, { representation: "date" });
+  const url = `http://localhost:3000/svc/connections/v2/${dateString}.json`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const puzzleData = await response.json();
+    if (puzzleData.status !== "OK") {
+      throw new Error("Puzzle data retrieval failed");
+    }
+    return puzzleData;
+  } catch (error) {
+    console.error("Error fetching puzzle of the day:", error);
+    throw error;
+  }
 };
 
-export const getSolution = (gameDate) => {
+export const getSolution = async (gameDate) => {
   const nextGameDate = getNextGameDate(gameDate);
-  const index = getIndex(gameDate);
-  const puzzleOfTheDay = getPuzzleOfDay(index);
-  console.log("index for today: ", index);
+  // const index = getIndex(gameDate);
+  const puzzleOfTheDay = await getPuzzleOfDay(gameDate);
+  console.log("puzzleOfTheDay: ", puzzleOfTheDay);
+  console.log("gameDate: ", gameDate);
+  console.log("index for today: ", puzzleOfTheDay.id);
   return {
     puzzleAnswers: puzzleOfTheDay,
     puzzleGameDate: gameDate,
