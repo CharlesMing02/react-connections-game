@@ -72,7 +72,7 @@ module.exports = {
     },
     fontFamily: {
       cute: ["Hachi Maru Pop"],
-      "space-mono": ["Space Mono"],
+      "space-mono": ["Monaco"],
     },
   },
   plugins: [require("tailwindcss-animate")],
