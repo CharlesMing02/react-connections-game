@@ -21,9 +21,9 @@ html {
 /*
     Custom styles
   */
-body {
-  font-family: sans-serif;
-}
+/* body {
+  font-family: sans;
+} */
 
 @media (max-height: 600px) {
   body {

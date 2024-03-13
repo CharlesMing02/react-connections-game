@@ -10,7 +10,7 @@ function App() {
   return (
     <PuzzleDataProvider>
       <GameStatusProvider>
-        <div className="wrapper">
+        <div className="wrapper" class="bg-pink-100">
           <Toaster />
           <Header />
           <Game />

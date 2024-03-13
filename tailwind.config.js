@@ -53,7 +53,7 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+        sans: ["Hachi Maru Pop", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {
@@ -71,6 +71,7 @@ module.exports = {
       },
     },
     fontFamily: {
+      cute: ["Hachi Maru Pop"],
       "space-mono": ["Space Mono"],
     },
   },
