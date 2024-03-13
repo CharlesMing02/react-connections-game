@@ -8,8 +8,9 @@ function SingleMistakeDisplay({ isUsed }) {
   return (
     <div>
       {isUsed ? (
-        <CircleSlash className="h-4 w-4 mt-1 stroke-neutral-400" />
+        <img src="bad-smiski.png" />
       ) : (
+        /* <CircleSlash className="h-4 w-4 mt-1 stroke-neutral-400" /> */
         <Circle className="h-4 w-4 mt-1 fill-green-300 stroke-cyan-300" />
       )}
     </div>

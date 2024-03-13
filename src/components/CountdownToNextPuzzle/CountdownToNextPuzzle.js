@@ -1,6 +1,7 @@
 import React from "react";
 import Countdown from "react-countdown";
-import { dateOfNextPuzzle } from "../../lib/time-utils";
+// import { dateOfNextPuzzle } from "../../lib/time-utils";
+import { startOfTomorrow } from "date-fns";
 
 // Renderer callback with condition
 const renderer = ({ days, hours, minutes, seconds, completed }) => {
@@ -41,6 +42,7 @@ const renderer = ({ days, hours, minutes, seconds, completed }) => {
 };
 
 function CountdownToNextPuzzle() {
+  const dateOfNextPuzzle = startOfTomorrow();
   return (
     <div className="flex flex-row place-content-center mt-4">
       <Countdown
