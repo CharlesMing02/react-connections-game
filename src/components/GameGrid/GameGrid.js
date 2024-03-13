@@ -45,13 +45,17 @@ export function SolvedWordRow({ ...props }) {
     delay: 250,
   });
   // if there is an image available render it as a popover
-  const isImageAvailable = props.imageSrc != null;
+  const isImageAvailable = props.imageSrc != "";
   return (
     <animated.div style={springProps}>
       {!isImageAvailable ? (
         <div style={{ backgroundColor: color, borderRadius: 8 }}>
-          <p className="font-bold pt-2 pl-4">{props.category}</p>
-          <p className="font-thin pb-2 pl-4">{props.words.join(", ")}</p>
+          <p className="font-space-mono font-bold pt-2 pl-4">
+            {props.category}
+          </p>
+          <p className="font-space-mono font-thin pb-2 pl-4">
+            {props.words.join(", ")}
+          </p>
         </div>
       ) : (
         <Popover>
@@ -66,8 +70,12 @@ export function SolvedWordRow({ ...props }) {
                   View More
                 </Badge>
               )}
-              <p className="font-bold pt-2 pl-4">{props.category}</p>
-              <p className="font-thin pb-2 pl-4">{props.words.join(", ")}</p>
+              <p className="font-space-mono font-bold pt-2 pl-4">
+                {props.category}
+              </p>
+              <p className="font-space-mono font-thin pb-2 pl-4">
+                {props.words.join(", ")}
+              </p>
             </div>
           </PopoverTrigger>
           <PopoverContent>

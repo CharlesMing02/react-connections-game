@@ -166,9 +166,9 @@ export const generateEmojiGrid = (gameData, submittedGuesses) => {
 
 export function getEmojiTiles() {
   let tiles = [];
-  tiles.push("🟩");
-  tiles.push("🟨");
-  tiles.push("🟪");
-  tiles.push("🟦");
+  tiles.push("💚"); // Green heart for green
+  tiles.push("💛"); // Yellow heart for yellow
+  tiles.push("💜"); // Purple heart for purple
+  tiles.push("💙"); // Blue heart for blue
   return tiles;
 }
