@@ -24,7 +24,7 @@ function WordRow({ words }) {
   );
 }
 
-export function SolvedWordRow({ ...props }) {
+export function SolvedWordRow({ pickupLines = [], ...props }) {
   const DIFFICULTY_COLOR_MAP = {
     1: "rgb(74 222 128)", // green
     2: "rgb(251 191 36)", // amber
@@ -50,6 +50,12 @@ export function SolvedWordRow({ ...props }) {
   // if there is an image available render it as a popover
   // const isImageAvailable = props.imageSrc != "";
   const isImageAvailable = true;
+  let pickupLinesText = "No pickup lines available for this category.";
+  if (pickupLines.length !== 0) {
+    pickupLinesText = pickupLines
+      .map((pickupLine) => pickupLine.line)
+      .join("\n");
+  }
 
   return (
     <animated.div style={springProps}>
@@ -90,10 +96,7 @@ export function SolvedWordRow({ ...props }) {
                 alt="Placeholder"
                 className="max-w-full h-auto rounded-lg"
               />
-              <p className="mt-2 text-base text-gray-800">
-                You've got my noodle all twisted up in knots, and I'm loving the
-                tangle
-              </p>
+              <p className="mt-2 text-base text-gray-800">{pickupLinesText}</p>
             </div>
           </PopoverContent>
         </Popover>
@@ -105,7 +108,7 @@ export function SolvedWordRow({ ...props }) {
 function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
   const { submittedGuesses, isGameOver, isGameWon, solvedGameData } =
     React.useContext(GameStatusContext);
-  const [pickupLines, setPickupLines] = useState(null);
+  const [pickupLines, setPickupLines] = useState([]);
 
   const { gameData } = React.useContext(PuzzleDataContext);
 
@@ -116,19 +119,50 @@ function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
   React.useEffect(() => {
     console.log(gameData);
 
-    async function getPickupLines() {
+    async function getPickupLines(wordsArray) {
+      const words = wordsArray.join(", ");
+      const query = `Make the best pickup line for the following 4 words, being as cheeky, suggestive, and creative as you can: ${words}. Score them out of 10 for humor and creativity and respond as a json object sorted from best to worst.`;
       const completion = await openai.chat.completions.create({
-        messages: [{ role: "system", content: "You are a helpful assistant." }],
-        model: "gpt-3.5-turbo",
+        model: "gpt-3.5-turbo-0125",
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content:
+              'You are a witty, flirty comedian that is as racy and suggestive as you are allowed to be. You are an expert in pickup lines. If asked to return pickup lines for 4 words, respond exactly like the following example, with no extra characters.\n{\n  "pickupLines": [\n    {\n      "word": "ANISE",\n      "line": "x",\n      "overallScore": {\n        "Creativity": 7,\n        "Humor": 6\n      }\n    },\n    {\n      "word": "FENNEL",\n      "line": "y",\n      "overallScore": {\n        "Creativity": 8,\n        "Humor": 7\n      }\n    },\n    {\n      "word": "LICORICE",\n      "line": "z",\n      "overallScore": {\n        "Creativity": 6,\n        "Humor": 7\n      }\n    },\n    {\n      "word": "TARRAGON",\n      "line": "a",\n      "overallScore": {\n        "Creativity": 7,\n        "Humor": 8\n      }\n    }\n  ]\n}',
+          },
+          {
+            role: "user",
+            content: query,
+          },
+        ],
+        temperature: 1,
+        max_tokens: 500,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
       });
-      console.log(completion.choices[0]);
-      if (!ignore) {
-        setPickupLines(completion.choices[0]);
+      console.log(completion.choices[0].message.content);
+      return JSON.parse(completion.choices[0].message.content).pickupLines;
+    }
+
+    async function getAllPickupLines() {
+      let allPickupLines = [];
+
+      for (let item of gameData) {
+        const lines = await getPickupLines(item.words);
+        allPickupLines.push(lines);
       }
+
+      setPickupLines(allPickupLines);
+      console.log(allPickupLines);
     }
 
     let ignore = false;
-    getPickupLines();
+    if (!ignore) {
+      getAllPickupLines();
+    }
+
     return () => {
       ignore = true;
     };
@@ -155,7 +189,11 @@ function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
       {(isGameOverAndWon || isGameActiveWithAnySolvedRows) && (
         <div className="grid gap-y-2 pb-2">
           {solvedGameData.map((solvedRowObj) => (
-            <SolvedWordRow key={solvedRowObj.category} {...solvedRowObj} />
+            <SolvedWordRow
+              key={solvedRowObj.category}
+              {...solvedRowObj}
+              pickupLines={pickupLines[solvedRowObj.difficulty - 1]}
+            />
           ))}
         </div>
       )}
