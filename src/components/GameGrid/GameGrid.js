@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import OpenAI from "openai";
 
 import WordButton from "../WordButton";
 
@@ -10,6 +11,8 @@ import { GameStatusContext } from "../../providers/GameStatusProvider";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Badge } from "../ui/badge";
+import badSmiski from "../../../public/bad-smiski.png";
+import { set } from "date-fns";
 
 function WordRow({ words }) {
   return (
@@ -45,7 +48,9 @@ export function SolvedWordRow({ ...props }) {
     delay: 250,
   });
   // if there is an image available render it as a popover
-  const isImageAvailable = props.imageSrc != "";
+  // const isImageAvailable = props.imageSrc != "";
+  const isImageAvailable = true;
+
   return (
     <animated.div style={springProps}>
       {!isImageAvailable ? (
@@ -79,8 +84,16 @@ export function SolvedWordRow({ ...props }) {
             </div>
           </PopoverTrigger>
           <PopoverContent>
-            <div>
-              <img src={props.imageSrc} />
+            <div className="flex flex-col items-center p-4">
+              <img
+                src={badSmiski}
+                alt="Placeholder"
+                className="max-w-full h-auto rounded-lg"
+              />
+              <p className="mt-2 text-base text-gray-800">
+                You've got my noodle all twisted up in knots, and I'm loving the
+                tangle
+              </p>
             </div>
           </PopoverContent>
         </Popover>
@@ -92,8 +105,34 @@ export function SolvedWordRow({ ...props }) {
 function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
   const { submittedGuesses, isGameOver, isGameWon, solvedGameData } =
     React.useContext(GameStatusContext);
+  const [pickupLines, setPickupLines] = useState(null);
 
   const { gameData } = React.useContext(PuzzleDataContext);
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true,
+  });
+  React.useEffect(() => {
+    console.log(gameData);
+
+    async function getPickupLines() {
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: "system", content: "You are a helpful assistant." }],
+        model: "gpt-3.5-turbo",
+      });
+      console.log(completion.choices[0]);
+      if (!ignore) {
+        setPickupLines(completion.choices[0]);
+      }
+    }
+
+    let ignore = false;
+    getPickupLines();
+    return () => {
+      ignore = true;
+    };
+  }, []); // Empty dependency array means this effect runs only once on mount
 
   React.useEffect(() => {
     const shakeEffect = window.setTimeout(() => {
