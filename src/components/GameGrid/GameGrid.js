@@ -24,7 +24,7 @@ function WordRow({ words }) {
   );
 }
 
-export function SolvedWordRow({ pickupLines = [], ...props }) {
+export function SolvedWordRow({ pickupLines = [{}], ...props }) {
   const DIFFICULTY_COLOR_MAP = {
     1: "rgb(74 222 128)", // green
     2: "rgb(251 191 36)", // amber
@@ -50,12 +50,19 @@ export function SolvedWordRow({ pickupLines = [], ...props }) {
   // if there is an image available render it as a popover
   // const isImageAvailable = props.imageSrc != "";
   const isImageAvailable = true;
-  let pickupLinesText = "No pickup lines available for this category.";
-  if (pickupLines.length !== 0) {
-    pickupLinesText = pickupLines
-      .map((pickupLine) => pickupLine.line)
-      .join("\n");
-  }
+  // let pickupLinesText = ["No pickup lines available for this category."];
+  // if (pickupLines.length > 1) {
+  //   pickupLinesText = pickupLines.map((pickupLine) => pickupLine.line);
+  // }
+
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+
+  const nextLine = () =>
+    setCurrentLineIndex((currentLineIndex + 1) % pickupLines.length);
+  const previousLine = () =>
+    setCurrentLineIndex(
+      (currentLineIndex - 1 + pickupLines.length) % pickupLines.length
+    );
 
   return (
     <animated.div style={springProps}>
@@ -89,14 +96,25 @@ export function SolvedWordRow({ pickupLines = [], ...props }) {
               </p>
             </div>
           </PopoverTrigger>
-          <PopoverContent>
-            <div className="flex flex-col items-center p-4">
-              <img
-                src={badSmiski}
-                alt="Placeholder"
-                className="max-w-full h-auto rounded-lg"
-              />
-              <p className="mt-2 text-base text-gray-800">{pickupLinesText}</p>
+          <PopoverContent
+            className="flex flex-col items-center p-4"
+            sideOffset={5}
+          >
+            <img
+              src={badSmiski}
+              alt="Placeholder"
+              className="max-w-full h-auto rounded-lg"
+            />
+            <p className="mt-2 text-base text-gray-800">
+              {pickupLines[currentLineIndex]?.line || "No pickup lines."}
+            </p>
+            <div className="flex mt-4">
+              <button onClick={previousLine} className="p-2">
+                Previous
+              </button>
+              <button onClick={nextLine} className="p-2">
+                Next
+              </button>
             </div>
           </PopoverContent>
         </Popover>
