@@ -59,33 +59,39 @@ const convertPuzzleData = (data) => {
   }));
 };
 
-app.get("/game-data", async (req, res) => {
-  const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
-  const url = `https://www.nytimes.com/svc/connections/v2/${today}.json`;
+app.get("/game-data/:date", async (req, res) => {
+  const requestedDate = req.params.date;
 
-  // If the data is cached and the date matches today, use the cached data
-  if (gameDataCache.date === today && gameDataCache.data) {
-    console.log("Using cached game data", gameDataCache);
-    return res.json(gameDataCache); //TODO SEND gameDataCache once openai is working
+  // Validate the requested date format (simple regex match for YYYY-MM-DD format)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid date format. Please use YYYY-MM-DD format." });
   }
 
-  // If it's a new day or the cache is empty, fetch and cache the game data
+  const url = `https://www.nytimes.com/svc/connections/v2/${requestedDate}.json`;
+
+  // Check if the data for the requested date is cached
+  if (gameDataCache.date === requestedDate && gameDataCache.data) {
+    console.log("Using cached game data", gameDataCache);
+    return res.json(gameDataCache);
+  }
+
+  // Fetch and cache the game data for the new date
   try {
     const response = await fetch(url); // Use your actual data-fetching logic here
     const data = await response.json();
     const convertedData = convertPuzzleData(data);
-    console.log(convertedData);
 
     let allPickupLines = [];
     for (let item of convertedData) {
       const lines = await getPickupLines(item.words);
       allPickupLines.push(lines);
     }
-    console.log(allPickupLines);
 
-    // Update the cache
+    // Update the cache with the new date's data
     gameDataCache = {
-      date: today,
+      date: requestedDate,
       id: data.id,
       data: convertedData,
       pickupLines: allPickupLines,
@@ -93,7 +99,7 @@ app.get("/game-data", async (req, res) => {
 
     res.json(gameDataCache);
   } catch (error) {
-    console.error("Error fetching game data:", error);
+    console.error("Error fetching game data for the requested date:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

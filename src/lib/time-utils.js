@@ -61,7 +61,7 @@ export const getIndex = (gameDate) => {
 
 export const getPuzzleOfDay = async (gameDate) => {
   const dateString = formatISO(gameDate, { representation: "date" });
-  const url = `${process.env.SERVER_URL}/game-data`;
+  const url = `${process.env.REACT_APP_SERVER_URL}/game-data/${dateString}`;
   console.log("URL: ", url);
 
   try {
