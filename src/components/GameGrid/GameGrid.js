@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import OpenAI from "openai";
 
 import WordButton from "../WordButton";
 
@@ -126,65 +125,10 @@ export function SolvedWordRow({ pickupLines = [{}], ...props }) {
 function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
   const { submittedGuesses, isGameOver, isGameWon, solvedGameData } =
     React.useContext(GameStatusContext);
-  const [pickupLines, setPickupLines] = useState([]);
+  // const [pickupLines, setPickupLines] = useState([]);
 
-  const { gameData } = React.useContext(PuzzleDataContext);
-
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-  });
-  React.useEffect(() => {
-    console.log(gameData);
-
-    async function getPickupLines(wordsArray) {
-      const words = wordsArray.join(", ");
-      const query = `Make the best pickup line for the following 4 words, being as cheeky, suggestive, and creative as you can: ${words}. Score them out of 10 for humor and creativity and respond as a json object sorted from best to worst.`;
-      const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo-0125",
-        response_format: { type: "json_object" },
-        messages: [
-          {
-            role: "system",
-            content:
-              'You are a witty, flirty comedian that is as racy and suggestive as you are allowed to be. You are an expert in pickup lines. If asked to return pickup lines for 4 words, respond exactly like the following example, with no extra characters.\n{\n  "pickupLines": [\n    {\n      "word": "ANISE",\n      "line": "x",\n      "overallScore": {\n        "Creativity": 7,\n        "Humor": 6\n      }\n    },\n    {\n      "word": "FENNEL",\n      "line": "y",\n      "overallScore": {\n        "Creativity": 8,\n        "Humor": 7\n      }\n    },\n    {\n      "word": "LICORICE",\n      "line": "z",\n      "overallScore": {\n        "Creativity": 6,\n        "Humor": 7\n      }\n    },\n    {\n      "word": "TARRAGON",\n      "line": "a",\n      "overallScore": {\n        "Creativity": 7,\n        "Humor": 8\n      }\n    }\n  ]\n}',
-          },
-          {
-            role: "user",
-            content: query,
-          },
-        ],
-        temperature: 1,
-        max_tokens: 500,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-      });
-      console.log(completion.choices[0].message.content);
-      return JSON.parse(completion.choices[0].message.content).pickupLines;
-    }
-
-    async function getAllPickupLines() {
-      let allPickupLines = [];
-
-      for (let item of gameData) {
-        const lines = await getPickupLines(item.words);
-        allPickupLines.push(lines);
-      }
-
-      setPickupLines(allPickupLines);
-      console.log(allPickupLines);
-    }
-
-    let ignore = false;
-    if (!ignore) {
-      getAllPickupLines();
-    }
-
-    return () => {
-      ignore = true;
-    };
-  }, []); // Empty dependency array means this effect runs only once on mount
+  const { gameData, pickupLines } = React.useContext(PuzzleDataContext);
+  console.log("pickupLines: ", pickupLines);
 
   React.useEffect(() => {
     const shakeEffect = window.setTimeout(() => {

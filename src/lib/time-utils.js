@@ -61,20 +61,18 @@ export const getIndex = (gameDate) => {
 
 export const getPuzzleOfDay = async (gameDate) => {
   const dateString = formatISO(gameDate, { representation: "date" });
-  const url = `http://localhost:3000/svc/connections/v2/${dateString}.json`;
+  const url = `${process.env.SERVER_URL}/game-data`;
+  console.log("URL: ", url);
 
   try {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const puzzleData = await response.json();
-    if (puzzleData.status !== "OK") {
-      throw new Error("Puzzle data retrieval failed");
-    }
-    return puzzleData;
+    const gameData = await response.json();
+    return gameData;
   } catch (error) {
-    console.error("Error fetching puzzle of the day:", error);
+    console.error("Error fetching game data:", error);
     throw error;
   }
 };
@@ -91,16 +89,18 @@ const convertPuzzleData = (data) => {
 export const getSolution = async (gameDate) => {
   const nextGameDate = getNextGameDate(gameDate);
   // const index = getIndex(gameDate);
-  const puzzleOfTheDay = await getPuzzleOfDay(gameDate);
-  console.log("puzzleOfTheDay: ", puzzleOfTheDay);
+  const dataOfTheDay = await getPuzzleOfDay(gameDate);
+  console.log("dataOfTheDay: ", dataOfTheDay);
   console.log("gameDate: ", gameDate);
-  console.log("index for today: ", puzzleOfTheDay.id);
+  console.log("index for today: ", dataOfTheDay.id);
   console.log("nextGameDate", nextGameDate.valueOf());
-  const convertedPuzzle = convertPuzzleData(puzzleOfTheDay);
+  // const convertedPuzzle = convertPuzzleData(puzzleOfTheDay);
   return {
-    puzzleAnswers: convertedPuzzle,
+    puzzleAnswers: dataOfTheDay.data,
     puzzleGameDate: gameDate,
-    puzzleIndex: puzzleOfTheDay.id,
+    puzzleIndex: dataOfTheDay.id,
+    pickupLines: dataOfTheDay.pickupLines,
+    // images: dataOfTheDay.images,
     dateOfNextPuzzle: nextGameDate.valueOf(),
   };
 };

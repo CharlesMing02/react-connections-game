@@ -6,6 +6,7 @@ export const PuzzleDataContext = React.createContext();
 function PuzzleDataProvider({ children }) {
   const [gameData, setGameData] = useState(null);
   const [puzzleIndex, setPuzzleIndex] = useState(null);
+  const [pickupLines, setPickupLines] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,6 +16,7 @@ function PuzzleDataProvider({ children }) {
         const data = await getSolution(gameDate);
         setGameData(data.puzzleAnswers);
         setPuzzleIndex(data.puzzleIndex);
+        setPickupLines(data.pickupLines);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch game data:", error);
@@ -35,7 +37,13 @@ function PuzzleDataProvider({ children }) {
 
   return (
     <PuzzleDataContext.Provider
-      value={{ gameData, numCategories, categorySize, puzzleIndex }}
+      value={{
+        gameData,
+        numCategories,
+        categorySize,
+        puzzleIndex,
+        pickupLines,
+      }}
     >
       {children}
     </PuzzleDataContext.Provider>
