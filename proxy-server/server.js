@@ -71,7 +71,7 @@ app.get("/puzzle-answers/:date", async (req, res) => {
   const url = `https://www.nytimes.com/svc/connections/v2/${requestedDate}.json`;
 
   if (gameDataCache.date === requestedDate && gameDataCache.data) {
-    console.log("Using cached puzzle answers", gameDataCache);
+    console.log("Using cached puzzle answers", gameDataCache.data);
     return res.json({
       date: gameDataCache.date,
       data: gameDataCache.data,
@@ -116,7 +116,7 @@ app.get("/pickup-lines/:date", async (req, res) => {
   }
 
   if (gameDataCache.date === requestedDate && gameDataCache.pickupLines) {
-    console.log("Using cached pickup lines", gameDataCache);
+    console.log("Using cached pickup lines", gameDataCache.pickupLines);
     return res.json({
       date: gameDataCache.date,
       pickupLines: gameDataCache.pickupLines,
@@ -137,6 +137,60 @@ app.get("/pickup-lines/:date", async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching pickup lines:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+async function getImage(category) {
+  const imagePrompt = `create the cutest most creative kawaii drawing you can that embodies \"${category}\". do not include text. value simplicity. incorporate typical kawaii imagery that best fits with the theme`;
+  const imageResponse = await openai.images.generate({
+    model: "dall-e-3",
+    prompt: imagePrompt,
+    response_format: "b64_json",
+  });
+  console.log("image revised prompt: ", imageResponse.data[0].revised_prompt);
+  return imageResponse.data[0].b64_json;
+}
+
+// Endpoint for fetching images
+app.get("/images/:date", async (req, res) => {
+  const requestedDate = req.params.date;
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid date format. Please use YYYY-MM-DD format." });
+  }
+
+  if (gameDataCache.date !== requestedDate || !gameDataCache.data) {
+    return res
+      .status(404)
+      .json({ error: "Puzzle data not found for the requested date." });
+  }
+
+  if (gameDataCache.date === requestedDate && gameDataCache.images) {
+    console.log("Using cached images", gameDataCache.date);
+    return res.json({
+      date: gameDataCache.date,
+      images: gameDataCache.images,
+    });
+  }
+
+  try {
+    let allImages = [];
+    for (let item of gameDataCache.data) {
+      const image = await getImage(item.category);
+      console.log("image generated for: ", item.category);
+      allImages.push(image);
+    }
+
+    gameDataCache.images = allImages;
+    res.json({
+      date: gameDataCache.date,
+      images: gameDataCache.images,
+    });
+  } catch (error) {
+    console.error("Error fetching images:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

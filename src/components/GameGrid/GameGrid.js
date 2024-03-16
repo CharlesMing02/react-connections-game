@@ -23,7 +23,11 @@ function WordRow({ words }) {
   );
 }
 
-export function SolvedWordRow({ pickupLines = [{}], ...props }) {
+export function SolvedWordRow({
+  pickupLines = [{}],
+  imageSource = "",
+  ...props
+}) {
   const DIFFICULTY_COLOR_MAP = {
     1: "rgb(74 222 128)", // green
     2: "rgb(251 191 36)", // amber
@@ -46,9 +50,8 @@ export function SolvedWordRow({ pickupLines = [{}], ...props }) {
     },
     delay: 250,
   });
-  // if there is an image available render it as a popover
   // const isImageAvailable = props.imageSrc != "";
-  const isImageAvailable = true;
+  const isImageAvailable = imageSource != "";
   // let pickupLinesText = ["No pickup lines available for this category."];
   // if (pickupLines.length > 1) {
   //   pickupLinesText = pickupLines.map((pickupLine) => pickupLine.line);
@@ -65,59 +68,52 @@ export function SolvedWordRow({ pickupLines = [{}], ...props }) {
 
   return (
     <animated.div style={springProps}>
-      {!isImageAvailable ? (
-        <div style={{ backgroundColor: color, borderRadius: 8 }}>
-          <p className="font-space-mono font-bold pt-2 pl-4">
-            {props.category}
-          </p>
-          <p className="font-space-mono font-thin pb-2 pl-4">
-            {props.words.join(", ")}
-          </p>
-        </div>
-      ) : (
-        <Popover>
-          <PopoverTrigger asChild>
-            <div
-              className="cursor-pointer hover:animate-pulse shadow-md"
-              style={{ backgroundColor: color, borderRadius: 8 }}
-              onClick={() => setHasBeenClicked(true)}
-            >
-              {!hasBeenClicked && (
-                <Badge className="animate-pulse absolute top-0 right-0 mr-2 mt-2">
-                  View More
-                </Badge>
-              )}
-              <p className="font-space-mono font-bold pt-2 pl-4">
-                {props.category}
-              </p>
-              <p className="font-space-mono font-thin pb-2 pl-4">
-                {props.words.join(", ")}
-              </p>
-            </div>
-          </PopoverTrigger>
-          <PopoverContent
-            className="flex flex-col items-center p-4"
-            sideOffset={5}
+      <Popover>
+        <PopoverTrigger asChild>
+          <div
+            className="cursor-pointer hover:animate-pulse shadow-md"
+            style={{ backgroundColor: color, borderRadius: 8 }}
+            onClick={() => setHasBeenClicked(true)}
           >
-            <img
-              src={badSmiski}
-              alt="Placeholder"
-              className="max-w-full h-auto rounded-lg"
-            />
-            <p className="mt-2 text-base text-gray-800">
-              {pickupLines[currentLineIndex]?.line || "No pickup lines."}
+            {!hasBeenClicked && (
+              <Badge className="animate-pulse absolute top-0 right-0 mr-2 mt-2">
+                View More
+              </Badge>
+            )}
+            <p className="font-space-mono font-bold pt-2 pl-4">
+              {props.category}
             </p>
-            <div className="flex mt-4">
-              <button onClick={previousLine} className="p-2">
-                Previous
-              </button>
-              <button onClick={nextLine} className="p-2">
-                Next
-              </button>
-            </div>
-          </PopoverContent>
-        </Popover>
-      )}
+            <p className="font-space-mono font-thin pb-2 pl-4">
+              {props.words.join(", ")}
+            </p>
+          </div>
+        </PopoverTrigger>
+        <PopoverContent
+          className="flex flex-col items-center p-4"
+          sideOffset={5}
+        >
+          <img
+            src={
+              isImageAvailable
+                ? `data:image/png;base64,${imageSource}`
+                : badSmiski
+            }
+            alt="Placeholder"
+            className="max-w-full h-auto rounded-lg"
+          />
+          <p className="mt-2 text-base text-gray-800">
+            {pickupLines[currentLineIndex]?.line || "No pickup lines."}
+          </p>
+          <div className="flex mt-4">
+            <button onClick={previousLine} className="p-2">
+              Previous
+            </button>
+            <button onClick={nextLine} className="p-2">
+              Next
+            </button>
+          </div>
+        </PopoverContent>
+      </Popover>
     </animated.div>
   );
 }
@@ -127,7 +123,7 @@ function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
     React.useContext(GameStatusContext);
   // const [pickupLines, setPickupLines] = useState([]);
 
-  const { gameData, pickupLines } = React.useContext(PuzzleDataContext);
+  const { gameData, pickupLines, images } = React.useContext(PuzzleDataContext);
   console.log("pickupLines: ", pickupLines);
 
   React.useEffect(() => {
@@ -159,6 +155,7 @@ function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
                   ? [{}]
                   : pickupLines[solvedRowObj.difficulty - 1]
               }
+              imageSource={!images ? "" : images[solvedRowObj.difficulty - 1]}
             />
           ))}
         </div>
@@ -175,7 +172,16 @@ function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
         <div className="grid gap-y-2 pb-2">
           <p>The answer categories are below.</p>
           {gameData.map((obj) => (
-            <SolvedWordRow key={obj.category} {...obj} />
+            <SolvedWordRow
+              key={obj.category}
+              {...obj}
+              pickupLines={
+                pickupLines === null
+                  ? [{}]
+                  : pickupLines[solvedRowObj.difficulty - 1]
+              }
+              imageSource={!images ? "" : images[solvedRowObj.difficulty - 1]}
+            />
           ))}
         </div>
       )}

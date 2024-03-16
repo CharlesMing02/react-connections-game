@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  getImages,
   getPuzzleAnswers,
   getPickupLines,
   getGameDate,
@@ -11,6 +12,7 @@ function PuzzleDataProvider({ children }) {
   const [gameData, setGameData] = useState(null);
   const [puzzleIndex, setPuzzleIndex] = useState(null);
   const [pickupLines, setPickupLines] = useState(null);
+  const [images, setImages] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +28,10 @@ function PuzzleDataProvider({ children }) {
         const pickupData = await getPickupLines(gameDate); // Fetch pickup lines (slower)
         console.log("pickupData: ", pickupData);
         setPickupLines(pickupData.pickupLines); // Update the context with pickup lines once fetched
+
+        const imageData = await getImages(gameDate); // Fetch images (slower)
+        console.log("imagesFetched: ", imageData !== null);
+        setImages(imageData.images); // Update the context with pickup lines once fetched
       } catch (error) {
         console.error("Failed to fetch game data:", error);
         setLoading(false); // Ensure loading is set to false even if an error occurs
@@ -50,6 +56,7 @@ function PuzzleDataProvider({ children }) {
         categorySize,
         puzzleIndex,
         pickupLines,
+        images,
       }}
     >
       {children}

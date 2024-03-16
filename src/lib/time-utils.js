@@ -114,6 +114,24 @@ export const getPickupLines = async (gameDate) => {
   }
 };
 
+export const getImages = async (gameDate) => {
+  const dateString = formatISO(gameDate, { representation: "date" });
+  const url = `${process.env.REACT_APP_SERVER_URL}/images/${dateString}`;
+  console.log("Fetching Images from URL: ", url);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const imagesData = await response.json();
+    return imagesData;
+  } catch (error) {
+    console.error("Error fetching images:", error);
+    throw error;
+  }
+};
+
 // export const getSolution = async (gameDate) => {
 //   const nextGameDate = getNextGameDate(gameDate);
 //   // const index = getIndex(gameDate);
