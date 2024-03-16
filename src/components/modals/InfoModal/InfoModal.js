@@ -21,7 +21,7 @@ function InfoModal() {
       <Tabs defaultValue="how-to-play">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="how-to-play">How To Play</TabsTrigger>
-          <TabsTrigger value="about-us">About Us</TabsTrigger>
+          <TabsTrigger value="secret">Secret</TabsTrigger>
         </TabsList>
         <TabsContent value="how-to-play">
           {" "}
@@ -47,13 +47,13 @@ function InfoModal() {
             </AccordionItem>
           </Accordion>
         </TabsContent>
-        <TabsContent value="about-us">
+        <TabsContent value="secret">
           {" "}
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
-              <AccordionTrigger>Who Are Y'all?</AccordionTrigger>
+              <AccordionTrigger>W</AccordionTrigger>
               <AccordionContent>
-                This project is brought to you by andcomputers, feel free to
+                {/* This project is brought to you by andcomputers, feel free to
                 subscribe to our writing and other experiments.{" "}
                 <a
                   href="https://andcomputers.io/"
@@ -61,13 +61,13 @@ function InfoModal() {
                   className="underline font-bold"
                 >
                   Check out our writing here.
-                </a>
+                </a> */}
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>How Can I Support?</AccordionTrigger>
+              <AccordionTrigger>I</AccordionTrigger>
               <AccordionContent>
-                <p className="mb-1">If you'd like to support feel free!</p>
+                {/* <p className="mb-1">If you'd like to support feel free!</p>
                 <ul className="list-disc">
                   <li>
                     <p>Help us make an upcoming puzzle by </p>
@@ -106,15 +106,13 @@ function InfoModal() {
                       </li>
                     </ul>
                   </li>
-                </ul>
+                </ul> */}
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger>
-                Any Other Projects to Check Out?
-              </AccordionTrigger>
+              <AccordionTrigger>P</AccordionTrigger>
               <AccordionContent>
-                <div className="grid grid-flow-row">
+                {/* <div className="grid grid-flow-row">
                   <p>Just a few! </p>
                   <a
                     href="https://andcomputers.io/"
@@ -137,7 +135,7 @@ function InfoModal() {
                   >
                     - Black Wordle
                   </a>
-                </div>
+                </div> */}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
