@@ -15,7 +15,7 @@ import { set } from "date-fns";
 
 function WordRow({ words }) {
   return (
-    <div className={`grid grid-cols-4 gap-4`}>
+    <div className={`grid grid-cols-4 gap-2`}>
       {words.map((word) => (
         <WordButton key={word} word={word} fullCandidateSize={words.length} />
       ))}
@@ -89,7 +89,7 @@ export function SolvedWordRow({
           </div>
         </PopoverTrigger>
         <PopoverContent
-          className="flex flex-col items-center p-4"
+          className="flex flex-col items-center p-2"
           sideOffset={5}
         >
           <img
@@ -101,10 +101,10 @@ export function SolvedWordRow({
             alt="Placeholder"
             className="max-w-full h-auto rounded-lg"
           />
-          <p className="mt-2 text-base text-gray-800">
+          <p className="mt-2 font-space-mono md:text-xs text-gray-800 ">
             {pickupLines[currentLineIndex]?.line || "No pickup lines."}
           </p>
-          <div className="flex mt-4">
+          <div className="flex mt-0">
             <button onClick={previousLine} className="p-2">
               Previous
             </button>

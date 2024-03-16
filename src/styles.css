@@ -5,7 +5,7 @@
 html {
   overflow-y: scroll;
 
-  --game-spacing: 32px;
+  --game-spacing: 8px;
   --header-height: 4rem;
 
   --color-success: hsl(150deg 70% 30%);
@@ -16,14 +16,17 @@ html {
   --color-gray-500: hsl(0deg 0% 50%);
   --color-gray-700: hsl(0deg 0% 75%);
   --color-gray-900: hsl(0deg 0% 90%);
+
 }
 
 /*
     Custom styles
   */
-/* body {
-  font-family: sans;
-} */
+#root {
+  background-color: rgb(252 231 243);
+  display: flex;
+  flex-direction: column;
+}
 
 @media (max-height: 600px) {
   body {
@@ -67,14 +70,15 @@ h1 {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: var(--game-spacing);
   padding-top: 16px;
-  padding-bottom: var(--game-spacing);
-  padding-left: var(--game-spacing);
-  padding-right: var(--game-spacing);
-  margin: 0 auto;
-  min-width: max(300px, 55vh, 40%);
-  max-width: min(500px, 58vh, 100%);
+  padding-bottom: 16px;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin: 0 4px;
+  min-width: max(300px, 40%);
+  max-width: min(500px, 58vh, 100% - 2 * var(--game-spacing));
 }
 
 .banner {

@@ -25,8 +25,8 @@ function NumberOfMistakesDisplay() {
   // array size of number of guess. [1, 2, 3, 4]
   const mistakeRange = range(MAX_MISTAKES);
   return (
-    <div className="flex flex-row gap-x-4 justify-center items-center">
-      <p className="text-base">Mistakes Remaining: </p>
+    <div className="flex flex-row gap-x-2 justify-center items-center">
+      <p className="text-xs">Mistakes Remaining: </p>
       {mistakeRange.map((el) => (
         <SingleMistakeDisplay key={el} isUsed={el < numMistakesUsed} />
       ))}

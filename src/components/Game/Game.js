@@ -92,17 +92,16 @@ function Game() {
             />
           </div>
         )}
-        <Separator />
 
         {!isGameOver ? (
-          <>
+          <div className="space-y-4">
             <NumberOfMistakesDisplay />
             <GameControlButtonsPanel
               shuffledRows={shuffledRows}
               setShuffledRows={setShuffledRows}
               setGridShake={setGridShake}
             />
-          </>
+          </div>
         ) : (
           <ViewResultsModal />
         )}

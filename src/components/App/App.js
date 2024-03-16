@@ -10,11 +10,11 @@ function App() {
   return (
     <PuzzleDataProvider>
       <GameStatusProvider>
-        <div className="wrapper" class="bg-pink-100">
-          <Toaster />
-          <Header />
-          <Game />
-        </div>
+        {/* <div className="wrapper" class="bg-pink-100"> */}
+        <Toaster />
+        <Header />
+        <Game />
+        {/* </div> */}
       </GameStatusProvider>
     </PuzzleDataProvider>
   );
