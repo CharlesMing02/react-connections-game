@@ -12,6 +12,7 @@ const device = parser.getDevice();
 
 export const shareStatus = (
   gameData,
+  pickupLine,
   submittedGuesses,
   handleShareToClipboard,
   handleShareFailure,
@@ -22,6 +23,7 @@ export const shareStatus = (
   const textToShare =
     `Connections\nPuzzle #${puzzleIndex}\n` +
     generateEmojiGrid(gameData, submittedGuesses, true) +
+    `${pickupLine ? "\n\n" + pickupLine : ""}` +
     `${includeGameLink ? "\n\n" + GAME_URL : ""}`;
 
   const shareData = { text: textToShare };

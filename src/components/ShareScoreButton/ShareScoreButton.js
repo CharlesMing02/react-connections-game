@@ -8,7 +8,8 @@ import { GameStatusContext } from "../../providers/GameStatusProvider";
 import { PuzzleDataContext } from "../../providers/PuzzleDataProvider";
 
 function ShareScoreButton({ buttonText = "Share", className = "" }) {
-  const { gameData, puzzleIndex } = React.useContext(PuzzleDataContext);
+  const { gameData, puzzleIndex, pickupLines } =
+    React.useContext(PuzzleDataContext);
   const { submittedGuesses } = React.useContext(GameStatusContext);
   const { toast } = useToast();
   function handleShareToClipboard() {
@@ -25,6 +26,20 @@ function ShareScoreButton({ buttonText = "Share", className = "" }) {
       description: "Was unable to copy to clipboard / share.",
     });
   }
+  let pickupLine = "";
+  if (pickupLines) {
+    const flatPickupLines = pickupLines.flat();
+
+    // Find the pickup line with the highest overall score
+    const highestScoreLine = flatPickupLines.reduce((acc, line) => {
+      const currentScore =
+        line.overallScore.Creativity + line.overallScore.Humor;
+      let maxScore = acc.overallScore.Creativity + acc.overallScore.Humor;
+      return currentScore > maxScore ? line : acc;
+    });
+    console.log("highestScoreLine: ", highestScoreLine);
+    pickupLine = highestScoreLine.line;
+  }
   return (
     <Sparkles>
       <Button
@@ -33,11 +48,12 @@ function ShareScoreButton({ buttonText = "Share", className = "" }) {
         onClick={() =>
           shareStatus(
             gameData,
+            pickupLine,
             submittedGuesses,
             handleShareToClipboard,
             handleShareFailure,
             puzzleIndex,
-            true
+            false
           )
         }
       >
