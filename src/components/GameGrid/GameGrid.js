@@ -154,7 +154,11 @@ function GameGrid({ gameRows, shouldGridShake, setShouldGridShake }) {
             <SolvedWordRow
               key={solvedRowObj.category}
               {...solvedRowObj}
-              pickupLines={pickupLines[solvedRowObj.difficulty - 1]}
+              pickupLines={
+                pickupLines === null
+                  ? [{}]
+                  : pickupLines[solvedRowObj.difficulty - 1]
+              }
             />
           ))}
         </div>

@@ -55,10 +55,93 @@ const convertPuzzleData = (data) => {
     category: category.title,
     words: category.cards.map((card) => card.content),
     difficulty: index + 1, // Assuming difficulty increases with each category
-    imageSrc: "",
   }));
 };
 
+// Endpoint for fetching puzzle answers
+app.get("/puzzle-answers/:date", async (req, res) => {
+  const requestedDate = req.params.date;
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid date format. Please use YYYY-MM-DD format." });
+  }
+
+  const url = `https://www.nytimes.com/svc/connections/v2/${requestedDate}.json`;
+
+  if (gameDataCache.date === requestedDate && gameDataCache.data) {
+    console.log("Using cached puzzle answers", gameDataCache);
+    return res.json({
+      date: gameDataCache.date,
+      data: gameDataCache.data,
+      id: gameDataCache.id,
+    });
+  }
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    const convertedData = convertPuzzleData(data);
+
+    gameDataCache.date = requestedDate;
+    gameDataCache.id = data.id;
+    gameDataCache.data = convertedData;
+
+    res.json({
+      date: gameDataCache.date,
+      data: gameDataCache.data,
+      id: gameDataCache.id,
+    });
+  } catch (error) {
+    console.error("Error fetching puzzle data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Endpoint for fetching pickup lines
+app.get("/pickup-lines/:date", async (req, res) => {
+  const requestedDate = req.params.date;
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid date format. Please use YYYY-MM-DD format." });
+  }
+
+  if (gameDataCache.date !== requestedDate || !gameDataCache.data) {
+    return res
+      .status(404)
+      .json({ error: "Puzzle data not found for the requested date." });
+  }
+
+  if (gameDataCache.date === requestedDate && gameDataCache.pickupLines) {
+    console.log("Using cached pickup lines", gameDataCache);
+    return res.json({
+      date: gameDataCache.date,
+      pickupLines: gameDataCache.pickupLines,
+    });
+  }
+
+  try {
+    let allPickupLines = [];
+    for (let item of gameDataCache.data) {
+      const lines = await getPickupLines(item.words);
+      allPickupLines.push(lines);
+    }
+
+    gameDataCache.pickupLines = allPickupLines;
+    res.json({
+      date: gameDataCache.date,
+      pickupLines: gameDataCache.pickupLines,
+    });
+  } catch (error) {
+    console.error("Error fetching pickup lines:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// DEPRECATED OLD COMBINED TOOK TOO LONG
 app.get("/game-data/:date", async (req, res) => {
   const requestedDate = req.params.date;
 
@@ -107,27 +190,3 @@ app.get("/game-data/:date", async (req, res) => {
 app.listen(PORT, () =>
   console.log(`Server is running on http://localhost:${PORT}`)
 );
-
-// const express = require("express");
-// const { createProxyMiddleware } = require("http-proxy-middleware");
-// const cors = require("cors");
-
-// const app = express();
-
-// // Enable CORS for all routes
-// app.use(cors());
-
-// const PORT = 3000; // You can choose any port
-// const API_SERVICE_URL = "https://www.nytimes.com";
-
-// app.use(
-//   "/svc",
-//   createProxyMiddleware({
-//     target: API_SERVICE_URL,
-//     changeOrigin: true,
-//   })
-// );
-
-// app.listen(PORT, () =>
-//   console.log(`Server is running on http://localhost:${PORT}`)
-// );

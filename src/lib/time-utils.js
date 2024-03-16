@@ -59,6 +59,7 @@ export const getIndex = (gameDate) => {
 //   return CONNECTION_GAMES[index % CONNECTION_GAMES.length];
 // };
 
+//OLD DEPRECATED
 export const getPuzzleOfDay = async (gameDate) => {
   const dateString = formatISO(gameDate, { representation: "date" });
   const url = `${process.env.REACT_APP_SERVER_URL}/game-data/${dateString}`;
@@ -77,33 +78,60 @@ export const getPuzzleOfDay = async (gameDate) => {
   }
 };
 
-const convertPuzzleData = (data) => {
-  return data.categories.map((category, index) => ({
-    category: category.title,
-    words: category.cards.map((card) => card.content),
-    difficulty: index + 1, // Assuming difficulty increases with each category
-    imageSrc: "",
-  }));
+export const getPuzzleAnswers = async (gameDate) => {
+  const dateString = formatISO(gameDate, { representation: "date" });
+  const url = `${process.env.REACT_APP_SERVER_URL}/puzzle-answers/${dateString}`;
+  console.log("Fetching Puzzle Answers from URL: ", url);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const puzzleData = await response.json();
+    return puzzleData;
+  } catch (error) {
+    console.error("Error fetching puzzle answers:", error);
+    throw error;
+  }
 };
 
-export const getSolution = async (gameDate) => {
-  const nextGameDate = getNextGameDate(gameDate);
-  // const index = getIndex(gameDate);
-  const dataOfTheDay = await getPuzzleOfDay(gameDate);
-  console.log("dataOfTheDay: ", dataOfTheDay);
-  console.log("gameDate: ", gameDate);
-  console.log("index for today: ", dataOfTheDay.id);
-  console.log("nextGameDate", nextGameDate.valueOf());
-  // const convertedPuzzle = convertPuzzleData(puzzleOfTheDay);
-  return {
-    puzzleAnswers: dataOfTheDay.data,
-    puzzleGameDate: gameDate,
-    puzzleIndex: dataOfTheDay.id,
-    pickupLines: dataOfTheDay.pickupLines,
-    // images: dataOfTheDay.images,
-    dateOfNextPuzzle: nextGameDate.valueOf(),
-  };
+export const getPickupLines = async (gameDate) => {
+  const dateString = formatISO(gameDate, { representation: "date" });
+  const url = `${process.env.REACT_APP_SERVER_URL}/pickup-lines/${dateString}`;
+  console.log("Fetching Pickup Lines from URL: ", url);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const pickupLinesData = await response.json();
+    return pickupLinesData;
+  } catch (error) {
+    console.error("Error fetching pickup lines:", error);
+    throw error;
+  }
 };
+
+// export const getSolution = async (gameDate) => {
+//   const nextGameDate = getNextGameDate(gameDate);
+//   // const index = getIndex(gameDate);
+//   const dataOfTheDay = await getPuzzleOfDay(gameDate);
+//   console.log("dataOfTheDay: ", dataOfTheDay);
+//   console.log("gameDate: ", gameDate);
+//   console.log("index for today: ", dataOfTheDay.id);
+//   console.log("nextGameDate", nextGameDate.valueOf());
+//   // const convertedPuzzle = convertPuzzleData(puzzleOfTheDay);
+//   return {
+//     puzzleAnswers: dataOfTheDay.data,
+//     puzzleGameDate: gameDate,
+//     puzzleIndex: dataOfTheDay.id,
+//     pickupLines: dataOfTheDay.pickupLines,
+//     // images: dataOfTheDay.images,
+//     dateOfNextPuzzle: nextGameDate.valueOf(),
+//   };
+// };
 
 export const getGameDate = () => {
   if (getIsLatestGame()) {
