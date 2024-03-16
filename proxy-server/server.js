@@ -13,7 +13,7 @@ const openai = new OpenAI({
 const app = express();
 app.use(cors());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 let gameDataCache = {
   date: null,
