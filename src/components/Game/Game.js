@@ -65,46 +65,47 @@ function Game() {
       <h3 className="text-xl text-center mt-4">
         Create {numCategories} groups of {categorySize}
       </h3>
-
-      <div className={`game-wrapper`}>
-        {isGameOver && isGameWon ? (
-          <GameWonModal
-            open={isEndGameModalOpen}
-            submittedGuesses={submittedGuesses}
-          />
-        ) : (
-          <GameLostModal
-            open={isEndGameModalOpen}
-            submittedGuesses={submittedGuesses}
-          />
-        )}
-        <GameGrid
-          gameRows={shuffledRows}
-          shouldGridShake={gridShake}
-          setShouldGridShake={setGridShake}
-        />
-        {showConfetti && isGameOver && (
-          <div className="grid place-content-center">
-            <ConfettiExplosion
-              particleCount={100}
-              force={0.8}
-              duration={2500}
+      <div className="flex justify-center grow">
+        <div className={`game-wrapper`}>
+          {isGameOver && isGameWon ? (
+            <GameWonModal
+              open={isEndGameModalOpen}
+              submittedGuesses={submittedGuesses}
             />
-          </div>
-        )}
-
-        {!isGameOver ? (
-          <div className="space-y-4">
-            <NumberOfMistakesDisplay />
-            <GameControlButtonsPanel
-              shuffledRows={shuffledRows}
-              setShuffledRows={setShuffledRows}
-              setGridShake={setGridShake}
+          ) : (
+            <GameLostModal
+              open={isEndGameModalOpen}
+              submittedGuesses={submittedGuesses}
             />
-          </div>
-        ) : (
-          <ViewResultsModal />
-        )}
+          )}
+          <GameGrid
+            gameRows={shuffledRows}
+            shouldGridShake={gridShake}
+            setShouldGridShake={setGridShake}
+          />
+          {showConfetti && isGameOver && (
+            <div className="grid place-content-center">
+              <ConfettiExplosion
+                particleCount={100}
+                force={0.8}
+                duration={2500}
+              />
+            </div>
+          )}
+
+          {!isGameOver ? (
+            <div className="space-y-4">
+              <NumberOfMistakesDisplay />
+              <GameControlButtonsPanel
+                shuffledRows={shuffledRows}
+                setShuffledRows={setShuffledRows}
+                setGridShake={setGridShake}
+              />
+            </div>
+          ) : (
+            <ViewResultsModal />
+          )}
+        </div>
       </div>
     </>
   );

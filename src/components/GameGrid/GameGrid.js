@@ -89,29 +89,29 @@ export function SolvedWordRow({
           </div>
         </PopoverTrigger>
         <PopoverContent
-          className="flex flex-col items-center p-2"
-          sideOffset={5}
+          className="flex flex-col max-w-12 items-center py-0.5"
+          sideOffset={0}
         >
-          <img
-            src={
-              isImageAvailable
-                ? `data:image/png;base64,${imageSource}`
-                : badSmiski
-            }
-            alt="Placeholder"
-            className="max-w-full h-auto rounded-lg"
-          />
-          <p className="mt-2 font-space-mono md:text-xs text-gray-800 ">
-            {pickupLines[currentLineIndex]?.line || "No pickup lines."}
-          </p>
-          <div className="flex mt-0">
+          <div className="flex justify-between">
             <button onClick={previousLine} className="p-2">
-              Previous
+              &lt;
             </button>
+            <img
+              src={
+                isImageAvailable
+                  ? `data:image/png;base64,${imageSource}`
+                  : badSmiski
+              }
+              alt="Placeholder"
+              className="w-60 h-60 rounded-lg"
+            />
             <button onClick={nextLine} className="p-2">
-              Next
+              &gt;
             </button>
           </div>
+          <p className="m-2 font-space-mono text-xs text-gray-800 text-center">
+            {pickupLines[currentLineIndex]?.line || "No pickup lines."}
+          </p>
         </PopoverContent>
       </Popover>
     </animated.div>

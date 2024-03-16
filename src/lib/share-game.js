@@ -21,7 +21,7 @@ export const shareStatus = (
 ) => {
   const GAME_URL = window.location.href;
   const textToShare =
-    `Connections\nPuzzle #${puzzleIndex}\n` +
+    `Connections\nPuzzle #${puzzleIndex - 1}\n` +
     generateEmojiGrid(gameData, submittedGuesses, true) +
     `${pickupLine ? "\n\n" + pickupLine : ""}` +
     `${includeGameLink ? "\n\n" + GAME_URL : ""}`;

@@ -26,6 +26,7 @@ html {
   background-color: rgb(252 231 243);
   display: flex;
   flex-direction: column;
+  /* align-items: center; */
 }
 
 @media (max-height: 600px) {
