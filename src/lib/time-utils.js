@@ -132,6 +132,23 @@ export const getImages = async (gameDate) => {
   }
 };
 
+export const getHardcoded = async () => {
+  const url = `${process.env.REACT_APP_SERVER_URL}/hardcoded-game`;
+  console.log("Fetching Puzzle Answers from URL: ", url);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const puzzleData = await response.json();
+    return puzzleData;
+  } catch (error) {
+    console.error("Error fetching puzzle answers:", error);
+    throw error;
+  }
+};
+
 // export const getSolution = async (gameDate) => {
 //   const nextGameDate = getNextGameDate(gameDate);
 //   // const index = getIndex(gameDate);

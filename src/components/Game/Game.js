@@ -60,6 +60,13 @@ function Game() {
     return () => window.clearTimeout(delayModalOpen);
   }, [isGameOver]);
 
+  // Shuffle the game data when it is fetched
+  React.useEffect(() => {
+    if (gameData && gameData.length > 0) {
+      setShuffledRows(shuffleGameData({ gameData }));
+    }
+  }, [gameData]);
+
   return (
     <>
       <h3 className="text-xl text-center mt-4">

@@ -4,6 +4,7 @@ import {
   getPuzzleAnswers,
   getPickupLines,
   getGameDate,
+  getHardcoded,
 } from "../../lib/time-utils";
 
 export const PuzzleDataContext = React.createContext();
@@ -41,6 +42,22 @@ function PuzzleDataProvider({ children }) {
     fetchGameData();
   }, []);
 
+  const fetchHardcoded = async () => {
+    console.log("fetchHardcoded");
+    try {
+      const puzzleData = await getHardcoded(); // Fetch puzzle answers (fast)
+      console.log("puzzleData: ", puzzleData);
+      setGameData(puzzleData.data);
+      setPuzzleIndex(puzzleData.id);
+      setLoading(false); // Set loading to false as the game can now be rendered with puzzle data
+
+      setPickupLines(puzzleData.pickupLines); // Update the context with pickup lines once fetched
+    } catch (error) {
+      console.error("Failed to fetch game data:", error);
+      setLoading(false); // Ensure loading is set to false even if an error occurs
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>; // Or any other loading state representation
   }
@@ -57,6 +74,7 @@ function PuzzleDataProvider({ children }) {
         puzzleIndex,
         pickupLines,
         images,
+        refetch: fetchHardcoded,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MAX_MISTAKES } from "../../../lib/constants";
 import { Info } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
@@ -9,8 +9,23 @@ import {
   AccordionTrigger,
 } from "../../ui/accordion";
 import BaseModal from "../BaseModal";
+import { PuzzleDataContext } from "../../../providers/PuzzleDataProvider";
 
 function InfoModal() {
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [password, setPassword] = useState("");
+  const { refetch } = React.useContext(PuzzleDataContext);
+
+  const checkPassword = async (inputPassword) => {
+    if (inputPassword === process.env.REACT_APP_PASSWORD) {
+      setIsAuthorized(true);
+      await refetch();
+      console.log("Refetched data");
+    } else {
+      alert("Incorrect password!");
+    }
+  };
+
   return (
     <BaseModal
       title=""
@@ -48,97 +63,24 @@ function InfoModal() {
           </Accordion>
         </TabsContent>
         <TabsContent value="secret">
-          {" "}
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger>W</AccordionTrigger>
-              <AccordionContent>
-                {/* This project is brought to you by andcomputers, feel free to
-                subscribe to our writing and other experiments.{" "}
-                <a
-                  href="https://andcomputers.io/"
-                  target="_blank"
-                  className="underline font-bold"
-                >
-                  Check out our writing here.
-                </a> */}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger>I</AccordionTrigger>
-              <AccordionContent>
-                {/* <p className="mb-1">If you'd like to support feel free!</p>
-                <ul className="list-disc">
-                  <li>
-                    <p>Help us make an upcoming puzzle by </p>
-                    <a
-                      href="mailto:jcp@mail.andcomputers.io"
-                      target="_blank"
-                      className="underline font-bold"
-                    >
-                      emailing the team.
-                    </a>
-                  </li>
-                  <li>
-                    <p className="mt-2 mb-1">Help us pay for servers & time:</p>
-                    <ul>
-                      <li>
-                        {" "}
-                        - One-time contribution via{" "}
-                        <a
-                          href="https://buy.stripe.com/7sIg1Udac6xZegodQR"
-                          target="_blank"
-                          className="underline font-bold"
-                        >
-                          Stripe.
-                        </a>
-                      </li>
-                      <li>
-                        {" "}
-                        - Recurring contributions via{" "}
-                        <a
-                          href="https://www.patreon.com/andcomputers"
-                          target="_blank"
-                          className="underline font-bold"
-                        >
-                          Patreon.
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                </ul> */}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-              <AccordionTrigger>P</AccordionTrigger>
-              <AccordionContent>
-                {/* <div className="grid grid-flow-row">
-                  <p>Just a few! </p>
-                  <a
-                    href="https://andcomputers.io/"
-                    target="_blank"
-                    className="underline font-bold"
-                  >
-                    - Our writing and thoughts are here.
-                  </a>
-                  <a
-                    href="https://blacktwitter.io/"
-                    target="_blank"
-                    className="underline font-bold"
-                  >
-                    - BlackTwitter
-                  </a>
-                  <a
-                    href="https://blackwords.andcomputers.io/"
-                    target="_blank"
-                    className="underline font-bold"
-                  >
-                    - Black Wordle
-                  </a>
-                </div> */}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          {isAuthorized ? (
+            <Accordion type="single" collapsible className="w-full">
+              {process.env.REACT_APP_MESSAGE}
+            </Accordion>
+          ) : (
+            <div>
+              <p>Please enter the password to access this section:</p>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && checkPassword(password)}
+                className="password-input"
+                placeholder="Password"
+              />
+              <button onClick={() => checkPassword(password)}>Submit</button>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </BaseModal>

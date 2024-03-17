@@ -103,6 +103,179 @@ app.get("/puzzle-answers/:date", async (req, res) => {
   }
 });
 
+app.get("/hardcoded-game", (req, res) => {
+  const hardcodedGameData = {
+    date: "2024-03-09",
+    id: 69,
+    data: [
+      {
+        category: "Favorite Pics",
+        words: ["Strip", "River", "Facetime", "Skate"],
+        difficulty: 1,
+        imageSrc: "",
+      },
+      {
+        category: "Dishes shared together",
+        words: ["Tofu pudding", "Sushi", "Pie", "Curry"],
+        difficulty: 2,
+        imageSrc: "",
+      },
+      {
+        category: "Notes",
+        words: ["Thirty", "Booklist", "Quarter", "Memo"],
+        difficulty: 3,
+        imageSrc: "",
+      },
+      {
+        category: "Mountains overcome",
+        words: ["Distance", "Elephant", "Bartender", "Doubt"],
+        difficulty: 4,
+        imageSrc: "",
+      },
+    ],
+    pickupLines: [
+      [
+        {
+          word: "Strip",
+          line: "Wanna strip away our doubts?",
+          overallScore: {
+            Creativity: 9,
+            Humor: 8,
+          },
+        },
+        {
+          word: "River",
+          line: "Are we in denial, or is this a river of attraction?",
+          overallScore: {
+            Creativity: 8,
+            Humor: 7,
+          },
+        },
+        {
+          word: "Facetime",
+          line: "FaceTime or face mine?",
+          overallScore: {
+            Creativity: 7,
+            Humor: 9,
+          },
+        },
+        {
+          word: "Skate",
+          line: "Wanna skate into my heart?",
+          overallScore: {
+            Creativity: 6,
+            Humor: 7,
+          },
+        },
+      ],
+      [
+        {
+          word: "Pie",
+          line: "Are we talking about pie, or the sweet slice of this moment?",
+          overallScore: {
+            Creativity: 9,
+            Humor: 8,
+          },
+        },
+        {
+          word: "Curry",
+          line: "Is it hot in here, or is it just your curry appeal?",
+          overallScore: {
+            Creativity: 8,
+            Humor: 9,
+          },
+        },
+        {
+          word: "Sushi",
+          line: "Are you sushi? Because I want to roll with you.",
+          overallScore: {
+            Creativity: 7,
+            Humor: 8,
+          },
+        },
+        {
+          word: "Tofu pudding",
+          line: "Your heart is Taiwanese tofu pudding, soft and sweet.",
+          overallScore: {
+            Creativity: 6,
+            Humor: 7,
+          },
+        },
+      ],
+      [
+        {
+          word: "Booklist",
+          line: "Are you a booklist? Because I want to check you out.",
+          overallScore: {
+            Creativity: 9,
+            Humor: 8,
+          },
+        },
+        {
+          word: "Memo",
+          line: "Did you get the memo? You're due in my heart by noon.",
+          overallScore: {
+            Creativity: 8,
+            Humor: 7,
+          },
+        },
+        {
+          word: "Thirty",
+          line: "Is it thirty or are you just heating up the room?",
+          overallScore: {
+            Creativity: 7,
+            Humor: 8,
+          },
+        },
+        {
+          word: "Quarter",
+          line: "Are you a quarter? Because you add value to my day.",
+          overallScore: {
+            Creativity: 6,
+            Humor: 7,
+          },
+        },
+      ],
+      [
+        {
+          word: "Bartender",
+          line: "Are you a bartender? Because you've got the mix I've been looking for.",
+          overallScore: {
+            Creativity: 9,
+            Humor: 8,
+          },
+        },
+        {
+          word: "Elephant",
+          line: "Is it an elephant in the room or are we just too attracted to each other?",
+          overallScore: {
+            Creativity: 8,
+            Humor: 7,
+          },
+        },
+        {
+          word: "Distance",
+          line: "Want to be my girlfriend?",
+          overallScore: {
+            Creativity: 7,
+            Humor: 6,
+          },
+        },
+        {
+          word: "Doubt",
+          line: "Why doubt when we could be certain about us?",
+          overallScore: {
+            Creativity: 6,
+            Humor: 5,
+          },
+        },
+      ],
+    ],
+    // images:
+  };
+  res.json(hardcodedGameData);
+});
+
 // Endpoint for fetching pickup lines
 app.get("/pickup-lines/:date", async (req, res) => {
   const requestedDate = req.params.date;
